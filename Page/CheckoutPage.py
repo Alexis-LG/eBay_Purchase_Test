@@ -1,4 +1,4 @@
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
@@ -26,10 +26,12 @@ class CheckoutPage:
             input_zip.send_keys(zip)
             input_phone = self.driver.find_element_by_name("phoneFlagComp1")
             input_phone.send_keys(phone)
-            button_submit = self.driver.find_element_by_id("sbtBtn")
-            button_submit.click()
 
         except TimeoutException:
             self.wait.until(EC.presence_of_element_located((By.NAME, "reviewbin")))
             self.driver.close()
             # Test would end here since the account would be legally binded to make the purchase in the next step
+
+    def is_submit_button_clickable(self):
+        button_submit = self.driver.find_element_by_id("sbtBtn")
+        return button_submit.is_enabled() & button_submit.is_displayed()

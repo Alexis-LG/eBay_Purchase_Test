@@ -11,7 +11,8 @@ from Page.LoginPage import LoginPage
 from Page.SearchPage import SearchPage
 
 desired_capabilities = [DesiredCapabilities.CHROME,
-                        DesiredCapabilities.FIREFOX
+                        DesiredCapabilities.FIREFOX,
+                        DesiredCapabilities.PHANTOMJS
                         ]
 
 selenium_grid_url = 'http://127.0.0.1:4444/wd/hub'
@@ -27,25 +28,26 @@ class Test(unittest.TestCase):
             self.driver.get(self.base_url)
             return self.driver
 
-    def test_can_user_login(self):
-        with allure.step("Check if user can make a purchase"):
-            home_page = HomePage(self.driver)
-            home_page.visit_login_page()
-            login_page = LoginPage(self.driver)
-            login_page.login('alexislopezg07@gmail.com', 'Yamero!')
-            home_page = HomePage(self.driver)
-            home_page.search_item('2017 Rollerblade Hombre')
-            search_page = SearchPage(self.driver)
-            search_page.select_rollerblade()
-            item_page = ItemPage(self.driver)
-            item_page.add_item_to_cart()
-            checkout_page = CheckoutPage(self.driver)
-            checkout_page.insert_address_information("Av. Buenos Aires #809",
-                                                     "Res. Las Palmas",
-                                                     "Santo Domingo",
-                                                     "Distrito Nacional",
-                                                     "10011",
-                                                     "8095942092")
+    @allure.step("User Makes Purchase")
+    def test_can_user_make_purchase(self, username, password):
+        home_page = HomePage(self.driver)
+
+        home_page.visit_login_page()
+        login_page = LoginPage(self.driver)
+        login_page.login(username, password)
+        home_page = HomePage(self.driver)
+        home_page.search_item('2017 Rollerblade Hombre')
+        search_page = SearchPage(self.driver)
+        search_page.select_rollerblade()
+        item_page = ItemPage(self.driver)
+        item_page.add_item_to_cart()
+        checkout_page = CheckoutPage(self.driver)
+        checkout_page.insert_address_information("Av. Buenos Aires #809",
+                                                 "Res. Las Palmas",
+                                                 "Santo Domingo",
+                                                 "Distrito Nacional",
+                                                 "10011",
+                                                 "8095942092")
 
     def tearDown(self):
         self.driver.quit()
