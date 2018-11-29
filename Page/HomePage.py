@@ -1,17 +1,20 @@
+from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
-from Page.BasePage import BasePage
 
-
-class HomePage(BasePage):
-    def __init__(self, browser):
-        super().__init__(browser)
-        self.browser = browser
+class HomePage:
+    def __init__(self, driver):
+        self.driver = driver
+        self.wait = WebDriverWait(driver, 10)
+        self.input_search = self.wait.until(EC.presence_of_element_located((
+            By.XPATH, "//input[@placeholder='Buscar artículos']")))
 
     def visit_login_page(self):
-        login_page = self.browser.find_element_by_xpath("//a[text()='Inicia sesión']")
-        login_page.click()
+        button_login = self.wait.until(EC.presence_of_element_located((
+            By.XPATH, "//a[text()='Inicia sesión']")))
+        button_login.click()
 
     def search_item(self, item_name):
-        input_search = self.browser.find_element_by_xpath("//input[@placeholder='Buscar artículos']")
-        input_search.send_keys(item_name, Keys.ENTER)
+        self.input_search.send_keys(item_name, Keys.ENTER)
